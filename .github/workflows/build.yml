@@ -39,7 +39,6 @@ jobs:
         unzip -q /tmp/cmdtools.zip -d /tmp/cmdtools
         mv /tmp/cmdtools/cmdline-tools/* $ANDROID_HOME/cmdline-tools/latest/
         
-        # Create legacy tools symlink so buildozer finds sdkmanager
         mkdir -p $ANDROID_HOME/tools/bin
         ln -s $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager $ANDROID_HOME/tools/bin/sdkmanager
 
@@ -48,14 +47,13 @@ jobs:
         echo "d56f5187479451eabf01fb78af6dfcb131a6481e" >> $ANDROID_HOME/licenses/android-sdk-license
         echo "84831b9409646a918e30573bab4c9c91346d8abd" > $ANDROID_HOME/licenses/android-sdk-preview-license
 
-        # Pre-install build-tools 37 and platform tools using sdkmanager
         export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
         yes | sdkmanager --licenses || true
         sdkmanager "platform-tools" "build-tools;37.0.0" "platforms;android-33"
 
     - name: Build APK with Buildozer
       run: |
-        buildozer --warn_on_root=0 android debug
+        buildozer --v --warn_on_root=0 android debug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
