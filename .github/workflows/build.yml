@@ -24,7 +24,7 @@ jobs:
         sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev libtinfo5
         pip install --upgrade pip setuptools buildozer cython
 
-    - name: Set up Android SDK & Accept Licenses
+    - name: Prepare Android SDK and Symlinks
       run: |
         export ANDROID_HOME=$HOME/.buildozer/android/platform/android-sdk
         mkdir -p $ANDROID_HOME/cmdline-tools/latest
@@ -32,15 +32,14 @@ jobs:
         unzip -q /tmp/cmdtools.zip -d /tmp/cmdtools
         mv /tmp/cmdtools/cmdline-tools/* $ANDROID_HOME/cmdline-tools/latest/
         
+        # Create legacy tools symlink so buildozer finds sdkmanager
+        mkdir -p $ANDROID_HOME/tools/bin
+        ln -s $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager $ANDROID_HOME/tools/bin/sdkmanager
+
         mkdir -p $ANDROID_HOME/licenses
         echo "245451e542f220e22e438a928274a47d37f68c6a" > $ANDROID_HOME/licenses/android-sdk-license
         echo "d56f5187479451eabf01fb78af6dfcb131a6481e" >> $ANDROID_HOME/licenses/android-sdk-license
         echo "84831b9409646a918e30573bab4c9c91346d8abd" > $ANDROID_HOME/licenses/android-sdk-preview-license
-
-        # Accept all sdk manager licenses and install required tools
-        export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
-        yes | sdkmanager --licenses || true
-        sdkmanager "platform-tools" "build-tools;33.0.0" "platforms;android-33"
 
     - name: Build APK with Buildozer
       run: |
