@@ -24,11 +24,11 @@ jobs:
         sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev
         pip install --upgrade pip setuptools buildozer cython
 
-    - name: Accept Android Licenses and Build APK
+    - name: Build APK with Buildozer
       run: |
-        yes | buildozer android debug
-      env:
-        ACCEPT_BUILD_TOOLS_CHECKSUM: "true"
+        mkdir -p ~/.android
+        touch ~/.android/repositories.cfg
+        buildozer android debug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
