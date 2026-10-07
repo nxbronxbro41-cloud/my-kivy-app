@@ -24,10 +24,17 @@ jobs:
         sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev
         pip install --upgrade pip setuptools buildozer cython
 
+    - name: Pre-accept Android SDK Licenses
+      run: |
+        mkdir -p ~/.android/
+        touch ~/.android/repositories.cfg
+        mkdir -p ~/.buildozer/android/platform/android-sdk/licenses
+        echo "245451e542f220e22e438a928274a47d37f68c6a" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+        echo "d56f5187479451eabf01fb78af6dfcb131a6481e" >> ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+        echo "84831b9409646a918e30573bab4c9c91346d8abd" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-preview-license
+
     - name: Build APK with Buildozer
       run: |
-        mkdir -p ~/.android
-        touch ~/.android/repositories.cfg
         buildozer android debug
 
     - name: Upload APK
