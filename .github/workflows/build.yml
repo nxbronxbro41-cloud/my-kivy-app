@@ -15,6 +15,11 @@ jobs:
       with:
         submodules: false
 
+    - name: Remove problematic .gitmodules
+      run: |
+        rm -f .gitmodules
+        git submodule deinit -f --all || true
+
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
